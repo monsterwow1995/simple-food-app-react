@@ -4,7 +4,7 @@ import Header from "./components/Layout/Header";
 import Meals from "./components/Meals/Meals";
 
 function App() {
-  const [ isModalShown, setIsModalShown] = useState(false);
+  const [isModalShown, setIsModalShown] = useState(false);
 
   const showModalHandler = () => {
     setIsModalShown(true);
@@ -15,13 +15,13 @@ function App() {
   };
 
   return (
-    <Fragment>
-      {isModalShown && <CartModal onClose={closeModalHandler}/>}
-      <Header onShow={showModalHandler}/>
+    <CartContextProvider value={[]}>
+      {isModalShown && <CartModal onClose={closeModalHandler} />}
+      <Header onShow={showModalHandler} />
       <main>
         <Meals />
       </main>
-    </Fragment>
+    </CartContextProvider>
   );
 }
 
