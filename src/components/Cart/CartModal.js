@@ -4,37 +4,17 @@ import CartContext from "../../store/cart-context";
 import CartItem from "./CartItem";
 import classes from "./CartModal.module.css";
 
-const CartModal = (props) => {
-  const cartCtx = useContext(CartContext);
-  const [cartItems] = useState(cartCtx.cartItems.items);
+const Backdrop = (props) => {
+  return <div className={classes.backdrop} onClick={props.onClose}></div>;
+};
 
-  const getTotalAmount = () => {
-    let totalPrice = 0;
-
-    for (let i = 0; i < cartItems.length; i++) {
-      totalPrice += (cartItems[i].price * cartItems[i].amount);
-    }
-
-    return totalPrice.toFixed(2);
-  };
-
-  const addOrDecreaseAmountHandler = (id, name, price, amount) => {
-      cartCtx.onAddCartItem(id, name, price, amount);
-  }
-
-  const backdrop = (
-    <div className={classes.backdrop} onClick={props.onClose}></div>
-  );
-  const modal = (
+const ModalOverlay = (props) => {
+  return (
     <div className={classes.modal}>
-      <ul className={classes["cart-items"]}>
-        {cartItems.map((item) => (
-          <CartItem key={item.id} id={item.id} name={item.name} amount={item.amount} price={item.price} onAdd={addOrDecreaseAmountHandler} onRemove={addOrDecreaseAmountHandler}/>
-        ))}
-      </ul>
+      <ul className={classes["cart-items"]}>{props.children}</ul>
       <div className={classes.total}>
         <span>Total amount</span>
-        <span>${getTotalAmount()}</span>
+        <span>${props.totalAmount}</span>
       </div>
       <div className={classes.actions}>
         <button className={classes["button-alt"]} onClick={props.onClose}>
@@ -44,16 +24,51 @@ const CartModal = (props) => {
       </div>
     </div>
   );
+};
+
+const CartModal = (props) => {
+  const cartCtx = useContext(CartContext);
+  const [cartItems] = useState(cartCtx.cartItems.items);
+
+  const getTotalAmount = () => {
+    let totalPrice = 0;
+
+    for (let i = 0; i < cartItems.length; i++) {
+      totalPrice += cartItems[i].price * cartItems[i].amount;
+    }
+
+    return totalPrice.toFixed(2);
+  };
+
+  const addOrDecreaseAmountHandler = (id, name, price, amount) => {
+    cartCtx.onAddCartItem(id, name, price, amount);
+  };
+
+  const backdrop = <Backdrop onClose={props.onClose} />;
+
+  const modalOverlay = (
+    <ModalOverlay totalAmount={getTotalAmount()} onClose={props.onClose}>
+      {cartItems.map((item) => (
+        <CartItem
+          key={item.id}
+          id={item.id}
+          name={item.name}
+          amount={item.amount}
+          price={item.price}
+          onAdd={addOrDecreaseAmountHandler}
+          onRemove={addOrDecreaseAmountHandler}
+        />
+      ))}
+    </ModalOverlay>
+  );
 
   ReactDOM.createPortal(backdrop, document.getElementById("backdrop-root"));
-  ReactDOM.createPortal(modal, document.getElementById("modal-root"));
+  ReactDOM.createPortal(modalOverlay, document.getElementById("modal-root"));
 
-  return (
-    <React.Fragment>
-      {backdrop}
-      {modal}
-    </React.Fragment>
-  );
+  return <React.Fragment>
+    {backdrop}
+    {modalOverlay}
+  </React.Fragment>;
 };
 
 export default CartModal;
