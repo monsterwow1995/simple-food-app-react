@@ -7,23 +7,23 @@ import classes from "./HeaderCartButton.module.css";
 const HeaderCartButton = (props) => {
   const cartCtx = useContext(CartContext);
   const [cartItemsNumber, setCartItemsNumber] = useState(
-    cartCtx.cartItems.items.length
+    cartCtx.items.length
   );
   const [btnIsBumped, setBtnIsBumped] = useState(false);
 
   const btnClasses = `${classes.button} ${btnIsBumped ? classes.bump : ""}`;
 
   useEffect(() => {
-    setCartItemsNumber(cartCtx.cartItems.items.length);
+    setCartItemsNumber(cartCtx.items.length);
 
-    if (cartCtx.cartItems.items.length === 0) return;
+    if (cartCtx.items.length === 0) return;
 
     setBtnIsBumped(true);
 
     setTimeout(() => {
       setBtnIsBumped(false);
     }, 300);
-  }, [cartCtx.cartItems.items.length]);
+  }, [cartCtx.items.length]);
 
   return (
     <React.Fragment>

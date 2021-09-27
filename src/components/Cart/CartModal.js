@@ -28,7 +28,7 @@ const ModalOverlay = (props) => {
 
 const CartModal = (props) => {
   const cartCtx = useContext(CartContext);
-  const [cartItems] = useState(cartCtx.cartItems.items);
+  const [cartItems] = useState(cartCtx.items);
 
   const getTotalAmount = () => {
     let totalPrice = 0;
@@ -40,9 +40,18 @@ const CartModal = (props) => {
     return totalPrice.toFixed(2);
   };
 
-  const addOrDecreaseAmountHandler = (id, name, price, amount) => {
-    cartCtx.onAddCartItem(id, name, price, amount);
+  const addAmountHandler = (id, name, price) => {
+    cartCtx.addItem({
+      id: id,
+      name: name,
+      price: price,
+      amount: 1
+    });
   };
+
+  const removeAmountHandler = (id) => {
+    cartCtx.removeItem(id);
+  }
 
   const backdrop = <Backdrop onClose={props.onClose} />;
 
@@ -55,8 +64,8 @@ const CartModal = (props) => {
           name={item.name}
           amount={item.amount}
           price={item.price}
-          onAdd={addOrDecreaseAmountHandler}
-          onRemove={addOrDecreaseAmountHandler}
+          onAdd={addAmountHandler}
+          onRemove={removeAmountHandler}
         />
       ))}
     </ModalOverlay>

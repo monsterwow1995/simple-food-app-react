@@ -1,7 +1,8 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import CartModal from "./components/Cart/CartModal";
 import Header from "./components/Layout/Header";
 import Meals from "./components/Meals/Meals";
+import { CartContextProvider } from "./store/cart-context";
 
 function App() {
   const [isModalShown, setIsModalShown] = useState(false);
@@ -15,7 +16,10 @@ function App() {
   };
 
   return (
-    <CartContextProvider value={[]}>
+    <CartContextProvider value={{
+      items: [],
+      totalAmount: 0
+    }}>
       {isModalShown && <CartModal onClose={closeModalHandler} />}
       <Header onShow={showModalHandler} />
       <main>
